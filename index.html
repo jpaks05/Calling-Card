@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>IT Calling Card</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap">
+  <style>
+    :root {
+      --bg: #e6e9f4;
+      --t-bg: #0e1226;
+      --t-bar: #171d3d;
+      --t-ink: #e6ecff;
+      --t-mute: #8d97c4;
+      --amber: #ffb347;
+      --sky: #7cc4ff;
+      --ok: #3ddc97;
+      --t-line: #252d57;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      color-scheme: light
+    }
+
+    @media (prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #070a18;
+        color-scheme: dark
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #070a18;
+      color-scheme: dark
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+      display: flex;
+      justify-content: center;
+      padding: 24px 14px 40px
+    }
+
+    .term {
+      width: 100%;
+      max-width: 470px;
+      background: var(--t-bg);
+      color: var(--t-ink);
+      border-radius: 16px;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.5;
+      box-shadow: 0 22px 50px -22px rgba(14, 18, 38, .7);
+      border: 1px solid var(--t-line)
+    }
+
+    .bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--t-bar);
+      padding: 11px 14px;
+      color: var(--t-mute);
+      font-size: 12px
+    }
+
+    .bar i {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--t-line)
+    }
+
+    .bar span {
+      margin-left: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .body {
+      padding: 18px 18px 8px
+    }
+
+    .ps {
+      color: var(--amber);
+      font-weight: 600
+    }
+
+    .cmd {
+      display: inline-block;
+      vertical-align: bottom;
+      overflow: hidden;
+      white-space: nowrap;
+      width: calc(var(--n)*1ch)
+    }
+
+    .out {
+      margin: 6px 0 18px
+    }
+
+    h1 {
+      font: 800 28px/1.15 "JetBrains Mono", monospace;
+      margin: 0;
+      color: #fff;
+      overflow-wrap: anywhere
+    }
+
+    .role {
+      color: var(--sky);
+      margin: 2px 0 8px;
+      font-weight: 600
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--t-mute);
+      font-size: 13px
+    }
+
+    .status b {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--ok);
+      animation: pulse 2s infinite;
+      flex: none
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px
+    }
+
+    .chips span {
+      border: 1px solid var(--t-line);
+      background: #ffffff0a;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 13px
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 76px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px dashed var(--t-line)
+    }
+
+    .row:last-child {
+      border-bottom: 0
+    }
+
+    .row small {
+      color: var(--t-mute);
+      font-size: 12px
+    }
+
+    .row a {
+      color: var(--t-ink);
+      text-decoration: none;
+      overflow-wrap: anywhere;
+      min-width: 0
+    }
+
+    .row a:hover,
+    .row a:focus-visible {
+      color: var(--amber);
+      text-decoration: underline
+    }
+
+    .cp {
+      font: 600 11px "JetBrains Mono", monospace;
+      color: var(--amber);
+      background: transparent;
+      border: 1px solid var(--t-line);
+      border-radius: 6px;
+      padding: 4px 9px;
+      cursor: pointer;
+      transition: background-color .2s, transform .15s
+    }
+
+    .cp:hover {
+      background: #ffb34716
+    }
+
+    .cp:active {
+      transform: scale(.93)
+    }
+
+    .qrsec {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .qr {
+      background: #fff;
+      padding: 10px;
+      border-radius: 12px;
+      width: 148px;
+      height: 148px;
+      position: relative;
+      overflow: hidden;
+      flex: none
+    }
+
+    .qr svg {
+      width: 100%;
+      height: 100%;
+      display: block
+    }
+
+    .qr::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 2px;
+      background: var(--amber);
+      box-shadow: 0 0 12px 3px var(--amber);
+      opacity: 0;
+      animation: scan 4s ease-in-out 3.6s infinite
+    }
+
+    .qr.swap svg {
+      animation: qrin .4s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .modes {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      min-width: 150px
+    }
+
+    .modes button {
+      font: 600 12px "JetBrains Mono", monospace;
+      text-align: left;
+      color: var(--t-ink);
+      background: transparent;
+      border: 1px solid var(--t-line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: background-color .2s, border-color .2s
+    }
+
+    .modes button[aria-pressed="true"] {
+      border-color: var(--amber);
+      background: #ffb3471a;
+      color: var(--amber)
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 9px;
+      height: 17px;
+      background: var(--amber);
+      vertical-align: text-bottom;
+      animation: blink 1s steps(1) infinite
+    }
+
+    .last {
+      padding: 6px 0 16px
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 2px
+    }
+
+    body.intro .term {
+      animation: boot .6s cubic-bezier(.2, .8, .2, 1) both
+    }
+
+    body.intro .cmd {
+      width: 0;
+      animation: type .5s steps(var(--n)) var(--d) forwards
+    }
+
+    body.intro .out {
+      opacity: 0;
+      animation: show .4s ease-out var(--d2) forwards
+    }
+
+    @keyframes type {
+      to {
+        width: calc(var(--n)*1ch)
+      }
+    }
+
+    @keyframes show {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes boot {
+      from {
+        opacity: 0;
+        transform: scale(.96) translateY(16px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 var(--ok)
+      }
+
+      70% {
+        box-shadow: 0 0 0 8px transparent
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 transparent
+      }
+    }
+
+    @keyframes scan {
+      0% {
+        top: 0;
+        opacity: 0
+      }
+
+      10% {
+        opacity: .9
+      }
+
+      45% {
+        top: calc(100% - 2px);
+        opacity: .9
+      }
+
+      55%,
+      100% {
+        top: calc(100% - 2px);
+        opacity: 0
+      }
+    }
+
+    @keyframes qrin {
+      from {
+        opacity: 0;
+        transform: scale(.85)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+  </style>
+</head>
+
+<body class="intro">
+  <main class="term" aria-label="IT calling card">
+    <div class="bar"><i></i><i></i><i></i><span id="title"></span></div>
+    <div class="body" id="body">
+      <div><span class="ps">$</span> <span class="cmd" style="--n:6">whoami</span></div>
+      <div class="out">
+        <h1 id="outName"></h1>
+        <p class="role" id="outRole"></p>
+        <span class="status"><b></b><span id="outStatus"></span></span>
+      </div>
+
+      <div><span class="ps">$</span> <span class="cmd" style="--n:12">stack --list</span></div>
+      <div class="out">
+        <div class="chips" id="chips"></div>
+      </div>
+
+      <div><span class="ps">$</span> <span class="cmd" style="--n:13">contact --all</span></div>
+      <div class="out" id="links"></div>
+
+      <div><span class="ps">$</span> <span class="cmd" style="--n:10">qr --share</span></div>
+      <div class="out qrsec">
+        <div class="qr" id="qrbox" role="img" aria-label="QR code"></div>
+        <div class="modes" role="group" aria-label="QR code content">
+          <button id="mContact" type="button" aria-pressed="true">save contact</button>
+          <button id="mSite" type="button" aria-pressed="false">open portfolio</button>
+          <button id="mLi" type="button" aria-pressed="false">open linkedin</button>
+        </div>
+      </div>
+      <div class="last"><span class="ps">$</span> <span class="cursor"></span></div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script>
+    // ===== Your details: change the text between the quotes =====
+    var CARD = {
+      name: "John Patrick M. Sales",
+      role: "IT Helpdesk",
+      status: "Open to opportunities",
+      skills: ["Networking", "Microsoft 365", "Cloud", "Linux", "Python", "Software", "Hardware",],
+      phone: "+63 997 649 2900",
+      email: "jpatricksales179@gmail.com",
+      linkedin: "https://www.linkedin.com/in/patricksales05",
+      github: "https://github.com/jpaks05",
+      site: "https://jpaks05.github.io/ITPortfolio/"
+    };
+    // =============================================================
+
+    (function () {
+      var mode = "contact";
+      function $(id) { return document.getElementById(id) }
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c] }) }
+      function vc(s) { return s.replace(/([,;\\])/g, "\\$1") }
+
+      $("outName").textContent = CARD.name;
+      $("outRole").textContent = CARD.role;
+      $("outStatus").textContent = CARD.status;
+      $("title").textContent = CARD.name.toLowerCase().split(/\s+/)[0] + "@card: ~";
+      $("chips").innerHTML = CARD.skills.map(function (x) { return "<span>" + esc(x) + "</span>" }).join("");
+
+      var rows = [
+        ["phone", "tel:" + CARD.phone.replace(/[^+\d]/g, ""), CARD.phone, CARD.phone],
+        ["email", "mailto:" + CARD.email, CARD.email, CARD.email],
+        ["linkedin", CARD.linkedin, CARD.linkedin.replace(/^https?:\/\/(www\.)?/i, ""), CARD.linkedin],
+        ["github", CARD.github, CARD.github.replace(/^https?:\/\/(www\.)?/i, ""), CARD.github],
+        ["portfolio", CARD.site, CARD.site.replace(/^https?:\/\//i, ""), CARD.site]
+      ];
+      var box = $("links");
+      box.innerHTML = rows.map(function (r, i) {
+        var x = /^https?:/.test(r[1]) ? ' target="_blank" rel="noopener noreferrer"' : '';
+        return '<div class="row"><small>' + r[0] + '</small><a href="' + esc(r[1]) + '"' + x + '>' + esc(r[2]) + '</a><button type="button" class="cp" data-i="' + i + '" aria-label="Copy ' + r[0] + '">copy</button></div>';
+      }).join("");
+      function copy(text, btn) {
+        function done() { var o = btn.textContent; btn.textContent = "copied"; setTimeout(function () { btn.textContent = o }, 1200) }
+        function fb() { try { var t = document.createElement("textarea"); t.value = text; t.style.position = "fixed"; t.style.opacity = "0"; document.body.appendChild(t); t.select(); document.execCommand("copy"); document.body.removeChild(t); done() } catch (e) { btn.textContent = "ctrl+c" } }
+        try { navigator.clipboard.writeText(text).then(done, fb) } catch (e) { fb() }
+      }
+      Array.prototype.forEach.call(box.querySelectorAll(".cp"), function (b) { b.onclick = function () { copy(rows[+b.getAttribute("data-i")][3], b) } });
+
+      function payload() {
+        if (mode === "site") return CARD.site;
+        if (mode === "li") return CARD.linkedin;
+        var p = CARD.name.split(/\s+/), last = p.length > 1 ? p.pop() : "", first = p.join(" ");
+        return ["BEGIN:VCARD", "VERSION:3.0", "N:" + vc(last) + ";" + vc(first) + ";;;", "FN:" + vc(CARD.name), "TITLE:" + vc(CARD.role),
+          "TEL;TYPE=CELL:" + vc(CARD.phone), "EMAIL:" + vc(CARD.email), "URL:" + CARD.site,
+          "X-SOCIALPROFILE;TYPE=linkedin:" + CARD.linkedin, "X-SOCIALPROFILE;TYPE=github:" + CARD.github, "END:VCARD"].join("\n");
+      }
+      function drawQR() {
+        try {
+          var qr = qrcode(0, "M"); qr.addData(payload()); qr.make();
+          var n = qr.getModuleCount(), d = "";
+          for (var r = 0; r < n; r++)for (var c = 0; c < n; c++) if (qr.isDark(r, c)) d += "M" + c + " " + r + "h1v1h-1z";
+          $("qrbox").innerHTML = '<svg viewBox="0 0 ' + n + ' ' + n + '" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg"><path d="' + d + '" fill="#0e1226"/></svg>';
+        } catch (e) { $("qrbox").textContent = "Too long" }
+      }
+      function setMode(m) {
+        mode = m;
+        [["contact", "mContact"], ["site", "mSite"], ["li", "mLi"]].forEach(function (p) { $(p[1]).setAttribute("aria-pressed", p[0] === m) });
+        var q = $("qrbox"); q.classList.remove("swap"); void q.offsetWidth; q.classList.add("swap");
+        drawQR();
+      }
+      $("mContact").onclick = function () { setMode("contact") };
+      $("mSite").onclick = function () { setMode("site") };
+      $("mLi").onclick = function () { setMode("li") };
+
+      // boot sequence: each command types, then its output fades in
+      var cmds = document.querySelectorAll(".cmd"), outs = document.querySelectorAll("#body .out");
+      for (var k = 0; k < cmds.length; k++) { var d = .4 + k * .8; cmds[k].style.setProperty("--d", d + "s"); outs[k].style.setProperty("--d2", (d + .5) + "s") }
+      setTimeout(function () { document.body.classList.remove("intro") }, 4600);
+
+      drawQR();
+    })();
+  </script>
+</body>
+
+</html>
